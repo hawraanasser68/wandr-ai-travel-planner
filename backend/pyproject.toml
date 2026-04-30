@@ -1,0 +1,83 @@
+[project]
+name = "travel-planner-backend"
+version = "0.1.0"
+requires-python = ">=3.11"
+
+dependencies = [
+    # Web framework
+    "fastapi>=0.111.0",
+    "uvicorn[standard]>=0.30.0",
+
+    # Database — async SQLAlchemy + Postgres driver + pgvector
+    "sqlalchemy[asyncio]>=2.0.30",
+    "asyncpg>=0.29.0",
+    "alembic>=1.13.1",
+    "pgvector>=0.3.2",
+
+    # Config & validation
+    "pydantic[email]>=2.7.1",
+    "pydantic-settings>=2.3.0",
+    "email-validator>=2.1.0",
+
+    # Auth
+    "python-jose[cryptography]>=3.3.0",
+    # bcrypt>=4.0 breaks passlib 1.7.4 (raises ValueError on 72-byte test passwords)
+    "passlib[bcrypt]>=1.7.4",
+    "bcrypt>=3.2.0,<4.0.0",
+    "python-multipart>=0.0.9",
+
+    # LLM / Agent
+    "langchain>=0.2.5",
+    "langchain-google-genai>=1.0.7",
+    "google-generativeai>=0.7.0",
+    "langchain-groq>=0.1.9",
+    "langgraph>=0.1.14",
+
+    # Embeddings (all-MiniLM-L6-v2 → 384 dims)
+    # Pin to 3.x: v4+ depends on transformers>=5 which needs torch>=2.4
+    "sentence-transformers>=3.0.0,<4.0.0",
+
+    # ML
+    "scikit-learn>=1.5.0",
+    "pandas>=2.2.2",
+    # numpy<2 required: torch 2.2.x compiled against numpy 1.x C-API
+    "numpy>=1.26.4,<2.0.0",
+    "joblib>=1.4.2",
+
+    # HTTP client (async only — never use requests)
+    "httpx>=0.27.0",
+
+    # Retry logic for external calls
+    "tenacity>=8.3.0",
+
+    # TTL cache for weather / FX responses
+    "cachetools>=5.3.3",
+
+    # Structured JSON logging
+    "structlog>=24.2.0",
+
+    # Email webhook delivery
+    "resend>=2.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2.2",
+    "pytest-asyncio>=0.23.7",
+    "pytest-mock>=3.14.0",
+    "ruff>=0.4.8",
+]
+
+# Ruff replaces black + isort + flake8
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+
+[tool.setuptools.packages.find]
+include = ["app*", "ml*"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]

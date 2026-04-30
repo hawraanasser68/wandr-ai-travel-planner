@@ -1,0 +1,48 @@
+services:
+
+  # ── Postgres + pgvector ──────────────────────────────────────────────────────
+  db:
+    image: pgvector/pgvector:pg16   # official image with pgvector extension pre-installed
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: travel_planner
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # persist data across restarts
+    ports:
+      - "5432:5432"                   # expose for local development / testing
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ── FastAPI backend ──────────────────────────────────────────────────────────
+  backend:
+    build: ./backend
+    env_file: ./backend/.env          # reads your real secrets
+    environment:
+      # Override DATABASE_URL so it uses the docker-compose service name "db"
+      # instead of "localhost" (which doesn't work inside Docker)
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/travel_planner
+    ports:
+      - "8000:8000"                   # expose for direct API access / testing
+    depends_on:
+      db:
+        condition: service_healthy    # wait for Postgres to be ready before starting
+    volumes:
+      # Mount ML artifacts so you can retrain without rebuilding the image
+      - ./backend/artifacts:/app/artifacts
+      # Mount Wikivoyage docs so fetch_wikivoyage.py output is visible immediately
+      - ./backend/rag_documents:/app/rag_documents
+
+  # ── React frontend ───────────────────────────────────────────────────────────
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"                       # access the app at http://localhost
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:

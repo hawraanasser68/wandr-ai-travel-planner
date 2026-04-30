@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wandr · AI Travel Planner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+            colors: {
+              brand: "#4f46e5",
+              "brand-dark": "#3730a3",
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+      * { font-family: 'Inter', system-ui, sans-serif; }
+      .glass { backdrop-filter: blur(16px); background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); }
+      .glass-light { backdrop-filter: blur(16px); background: rgba(255,255,255,0.88); border: 1px solid rgba(255,255,255,0.5); }
+      .chat-scroll::-webkit-scrollbar { width: 4px; }
+      .chat-scroll::-webkit-scrollbar-track { background: transparent; }
+      .chat-scroll::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 99px; }
+    </style>
+  </head>
+  <body class="bg-slate-50 text-gray-900 antialiased">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
