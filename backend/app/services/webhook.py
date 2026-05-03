@@ -10,7 +10,7 @@ import structlog
 import resend
 
 from app.config import get_settings
-from app.models.db import AgentRun, User
+from app.database.db import AgentRun, User
 
 log = structlog.get_logger()
 

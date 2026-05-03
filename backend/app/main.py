@@ -13,8 +13,8 @@ import structlog
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import agent as agent_router
-from app.api import auth as auth_router
+from app.routers import agent as agent_router
+from app.routers import auth as auth_router
 from app.config import get_settings
 from app.rag.ingestion import ingest_documents
 

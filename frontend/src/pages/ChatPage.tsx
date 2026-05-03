@@ -56,7 +56,9 @@ export default function ChatPage() {
   useEffect(() => { if (!token) navigate("/login"); }, [token, navigate]);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView();
+    }
   }, [messages, activeTools]);
 
   useEffect(() => {

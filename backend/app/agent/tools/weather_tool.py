@@ -19,6 +19,10 @@ from tenacity import retry, stop_after_attempt, wait_exponential
 
 log = structlog.get_logger()
 
+
+#User asks weather → city → coordinates → weather API → structured result
+
+
 WMO_CODES: dict[int, str] = {
     0: "clear sky",
     1: "mainly clear", 2: "partly cloudy", 3: "overcast",
@@ -31,7 +35,7 @@ WMO_CODES: dict[int, str] = {
     95: "thunderstorm", 96: "thunderstorm with hail", 99: "thunderstorm with heavy hail",
 }
 
-
+#1. Convert city name → latitude/longitude (geocoding)
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=1, max=4))
 def _geocode(city: str) -> tuple[float, float] | None:
     with httpx.Client(timeout=10) as client:
@@ -46,7 +50,7 @@ def _geocode(city: str) -> tuple[float, float] | None:
             return None
         return float(results[0]["lat"]), float(results[0]["lon"])
 
-
+#2. Use coordinates → fetch weather data
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=1, max=4))
 def _fetch_weather(lat: float, lon: float) -> dict:
     with httpx.Client(timeout=10) as client:

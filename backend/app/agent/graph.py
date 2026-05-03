@@ -27,7 +27,7 @@ from app.config import get_settings
 log = structlog.get_logger()
 
 # Safety cap — prevents runaway loops if the model keeps calling tools
-MAX_ITERATIONS = 3
+MAX_ITERATIONS = 4
 
 # ALLOWED_TOOLS is now derived from the registry — no manual sync needed
 

@@ -16,7 +16,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_settings
-from app.models.db import User
+from app.database.db import User
 from app.schemas.auth import LoginRequest, RegisterRequest, TokenResponse, UserResponse
 
 log = structlog.get_logger()

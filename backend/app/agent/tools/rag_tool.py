@@ -32,14 +32,17 @@ class RAGRetrieverTool(BaseTool):
         "costs, best seasons, and local culture. Always call after the classifier "
         "so you can pass travel_style and ml_confidence for targeted results."
     )
-    args_schema: Type[BaseModel] = RAGInput
+    args_schema: Type[BaseModel] = RAGInput #defines expected input
 
     # session is stored as an instance field — injected by make_rag_tool()
-    session: AsyncSession
+    session: AsyncSession #This tool has access to the database
 
+    #class Config tells Pydantic: "don't try to validate this field, just store whatever object I pass in.
     class Config:
-        arbitrary_types_allowed = True
+        arbitrary_types_allowed = True #Because AsyncSession is not a simple type. Pydantic normally rejects it → this allows it
 
+
+    #this tool is async only because database call are async. LangChain will call _arun, not _run. If _arun doesn't exist → NotImplementedError at runtime.
     def _run(self, query: str, travel_style: str | None = None, ml_confidence: float = 0.0) -> str:
         raise NotImplementedError("RAGRetrieverTool is async-only. Use _arun.")
 
@@ -60,10 +63,12 @@ class RAGRetrieverTool(BaseTool):
         ]
         return json.dumps({
             "results": formatted,
-            "filtered_by_style": bool(travel_style and ml_confidence > 0.7),
+            "filtered_by_style": bool(travel_style and ml_confidence > 0.7), #Only trust classifier if confidence is high
         })
 
 
 def make_rag_tool(session: AsyncSession) -> RAGRetrieverTool:
     """Return a RAGRetrieverTool bound to the given request-scoped session."""
     return RAGRetrieverTool(session=session)
+
+# in the case of the retriever tool we did not do rag_tool = RAGRetrieverTool() because this tool needs a db session injected in it 

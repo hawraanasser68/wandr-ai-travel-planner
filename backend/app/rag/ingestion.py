@@ -19,7 +19,7 @@ import structlog
 from sqlalchemy import func, select
 
 from app.db.session import AsyncSessionFactory
-from app.models.db import DocumentChunk
+from app.database.db import DocumentChunk
 from app.rag.embedder import embed_batch
 
 log = structlog.get_logger()

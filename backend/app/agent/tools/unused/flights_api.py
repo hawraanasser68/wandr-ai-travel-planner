@@ -18,7 +18,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 
 from app.config import get_settings
 from app.dependencies import get_current_user
-from app.models.db import User
+from app.database.db import User
 
 log = structlog.get_logger()
 router = APIRouter(prefix="/flights", tags=["flights"])

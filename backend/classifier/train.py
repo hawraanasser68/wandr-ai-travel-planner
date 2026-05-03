@@ -23,9 +23,8 @@ from datetime import datetime
 from pathlib import Path
 
 import joblib
-import numpy as np
 import pandas as pd
-from ml.transforms import flatten_text  # noqa: F401 — must be importable for pickle
+from classifier.transforms import flatten_text  # noqa: F401 — must be importable for pickle
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -50,7 +49,6 @@ from sklearn.preprocessing import (
     StandardScaler,
 )
 from sklearn.svm import SVC
-from sklearn.utils.class_weight import compute_class_weight
 
 warnings.filterwarnings("ignore")
 
@@ -94,16 +92,6 @@ def build_preprocessor() -> ColumnTransformer:
     ])
 
 
-def compute_weights(y_encoded: np.ndarray) -> dict:
-    """
-    Compute class weights to handle imbalance honestly.
-    Passed to classifiers that support class_weight param.
-    """
-    classes = np.unique(y_encoded)
-    weights = compute_class_weight("balanced", classes=classes, y=y_encoded)
-    return dict(zip(classes, weights))
-
-
 def train_and_save() -> None:
     # ── Load & engineer ──────────────────────────────────────────────────────
     df = pd.read_csv(DATASET_PATH)
@@ -124,8 +112,6 @@ def train_and_save() -> None:
         X, y, test_size=0.2, random_state=42, stratify=y
     )
 
-    class_weights = compute_weights(y_train.values)
-
     # ── Model candidates ─────────────────────────────────────────────────────
     candidates = {
         "logistic_regression": (
@@ -143,7 +129,8 @@ def train_and_save() -> None:
             ),
             {
                 "clf__n_estimators": [100, 200],
-                "clf__max_depth": [None, 10, 20],
+                "clf__max_depth": [5, 10, 20],
+                "clf__min_samples_leaf": [2, 5],
             },
         ),
         "svm": (
@@ -215,8 +202,12 @@ def train_and_save() -> None:
             "timestamp": datetime.now().isoformat(),
         })
 
-        if f1 > best_score:
-            best_score = f1
+        gap = f1_score(y_train, best_est.predict(X_train), average="macro") - cv_scores.mean()
+        if gap > 0.05:
+            print(f"  ⚠ possible overfit (gap={gap:.3f})")
+
+        if cv_scores.mean() > best_score:
+            best_score = cv_scores.mean()
             best_model = best_est
             best_name = name
 

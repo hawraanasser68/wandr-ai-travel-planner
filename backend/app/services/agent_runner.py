@@ -18,7 +18,7 @@ from langchain_core.messages import AIMessage, HumanMessage
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.agent.graph import AgentState, build_graph
-from app.models.db import AgentRun, ToolCallLog, User
+from app.database.db import AgentRun, ToolCallLog, User
 from app.schemas.agent import AgentQueryRequest, StreamChunk
 from app.services import webhook as webhook_service
 

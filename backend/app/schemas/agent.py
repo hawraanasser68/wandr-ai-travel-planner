@@ -13,7 +13,7 @@ from pydantic import BaseModel, Field
 # ── Incoming request ───────────────────────────────────────────────────────────
 
 class HistoryMessage(BaseModel):
-    role: Literal["user", "assistant"]
+    role: Literal["user", "assistant"]#means only those two exact strings are accepted — anything else fails validation.
     content: str
 
 
@@ -32,20 +32,13 @@ class AgentQueryRequest(BaseModel):
 # Each chunk is a JSON line pushed over the SSE stream.
 # The frontend reads `type` to decide how to render it.
 
-class StreamChunk(BaseModel):
+class StreamChunk(BaseModel): #StreamChunk — a small JSON object pushed to the frontend immediately.
     type: Literal["token", "tool_call", "tool_result", "done", "error"]
     content: str = ""          # token text, tool name, error message, or "" for done
     run_id: uuid.UUID | None = None   # populated on the "done" event
 
 
 # ── Non-streaming response (used by /agent/runs/{id} history endpoint) ─────────
-
-class ToolCallSummary(BaseModel):
-    tool_name: str
-    duration_ms: int
-
-    model_config = {"from_attributes": True}
-
 
 class AgentRunResponse(BaseModel):
     id: uuid.UUID

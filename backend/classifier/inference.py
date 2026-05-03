@@ -14,7 +14,7 @@ import joblib
 import pandas as pd
 
 from app.config import get_settings
-from ml.transforms import flatten_text  # noqa: F401 — required for joblib unpickling
+from classifier.transforms import flatten_text  # noqa: F401 — required for joblib unpickling
 
 
 @lru_cache(maxsize=1)

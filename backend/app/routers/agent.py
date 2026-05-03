@@ -16,7 +16,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.dependencies import get_current_user, get_session
-from app.models.db import AgentRun, User
+from app.database.db import AgentRun, User
 from app.schemas.agent import AgentQueryRequest, AgentRunResponse
 from app.services.agent_runner import stream_agent
 from app.services.webhook import send_to_email

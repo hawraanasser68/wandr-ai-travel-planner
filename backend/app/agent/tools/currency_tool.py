@@ -15,6 +15,7 @@ from tenacity import retry, stop_after_attempt, wait_exponential
 
 log = structlog.get_logger()
 
+# Turns country name → currency code
 COUNTRY_CURRENCY: dict[str, str] = {
     "New Zealand": "NZD", "Argentina": "ARS", "Indonesia": "IDR",
     "Greece": "EUR", "Japan": "JPY", "Italy": "EUR", "Thailand": "THB",
@@ -29,7 +30,7 @@ COUNTRY_CURRENCY: dict[str, str] = {
     "Vietnam": "VND",
 }
 
-
+#retry: If API fails → try again up to 3 times. Wait longer each retry
 @retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=1, max=4))
 def _fetch_exchange(base: str, target: str) -> dict | None:
     if base == target:

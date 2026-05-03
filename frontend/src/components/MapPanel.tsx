@@ -58,12 +58,13 @@ interface Props {
 
 function MapInner({ locations, userLocation, onMarkerClick }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const onMarkerClickRef = useRef(onMarkerClick);
+  useEffect(() => { onMarkerClickRef.current = onMarkerClick; });
 
   useEffect(() => {
     if (!containerRef.current) return;
     if (locations.length === 0 && !userLocation) return;
 
-    // Build map fresh on every dependency change
     const map = L.map(containerRef.current, { scrollWheelZoom: false });
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -100,7 +101,7 @@ function MapInner({ locations, userLocation, onMarkerClick }: Props) {
               : ""
           }`
         )
-        .on("click", () => onMarkerClick(loc.name));
+        .on("click", () => onMarkerClickRef.current(loc.name));
 
       allLatLngs.push([loc.lat, loc.lng]);
 
@@ -121,7 +122,7 @@ function MapInner({ locations, userLocation, onMarkerClick }: Props) {
     }
 
     return () => { map.remove(); };
-  }, [locations, userLocation, onMarkerClick]);
+  }, [locations, userLocation]);
 
   if (locations.length === 0 && !userLocation) return null;
 

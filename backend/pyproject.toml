@@ -76,7 +76,7 @@ line-length = 88
 select = ["E", "F", "I"]
 
 [tool.setuptools.packages.find]
-include = ["app*", "ml*"]
+include = ["app*", "classifier*"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

@@ -77,7 +77,7 @@ class Settings(BaseSettings):
 # lru_cache means Settings() is only instantiated once per process.
 # Every module calls get_settings() — no globals scattered around.
 @lru_cache()
-def get_settings() -> Settings:
+def get_settings() -> Settings: #third-party libraries like langraph don't use pydantic so they don't have access to Settings() — this function is the bridge that lets them read config values without knowing about pydantic
     settings = Settings()
     os.environ["GOOGLE_API_KEY"] = settings.google_api_key
     # LangSmith reads these directly from os.environ

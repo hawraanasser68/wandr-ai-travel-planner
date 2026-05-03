@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import create_async_engine
 
 # Import Base and all models so Alembic sees the metadata
 from app.db.session import Base
-from app.models import db as _models  # noqa: F401 — import triggers registration
+from app.database import db as _models  # noqa: F401 — import triggers registration
 from app.config import get_settings
 
 config = context.config

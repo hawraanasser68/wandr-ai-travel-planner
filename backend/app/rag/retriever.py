@@ -14,7 +14,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_settings
-from app.models.db import DocumentChunk
+from app.database.db import DocumentChunk
 from app.rag.embedder import embed
 
 log = structlog.get_logger()
