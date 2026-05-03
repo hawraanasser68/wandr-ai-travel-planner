@@ -1,0 +1,36 @@
+{
+  "name": "Wandr AI Travel Planner",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "backend",
+  "workspaceFolder": "/workspace",
+
+  // Forward all service ports so they appear in the Codespaces "Ports" tab
+  "forwardPorts": [80, 8000, 5432],
+  "portsAttributes": {
+    "80":   { "label": "Frontend (React)",      "onAutoForward": "openBrowser" },
+    "8000": { "label": "Backend API (FastAPI)",  "onAutoForward": "notify" },
+    "5432": { "label": "PostgreSQL",             "onAutoForward": "silent" }
+  },
+
+  // Inject Codespaces secrets as env vars into backend/.env on creation
+  "initializeCommand": "[ -f backend/.env ] || cp backend/.env.example backend/.env",
+
+  // After the container starts, run migrations and show how to launch the app
+  "postStartCommand": "echo '\n✅ Container ready.\nRun: docker-compose up --build\nThen open the forwarded port 80 in your browser.\n'",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "bradlc.vscode-tailwindcss"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/app/.venv/bin/python",
+        "editor.formatOnSave": true
+      }
+    }
+  }
+}
